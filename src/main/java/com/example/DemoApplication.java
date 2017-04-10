@@ -19,7 +19,7 @@ public class DemoApplication {
     @Bean
     CommandLineRunner init(UserRepository userRepository) {
         return (evt) -> Arrays.asList(
-                "jhoeller@naver.com,dsyer@naver.com,pwebb@naver.com,asd@naver.com".split(","))
+                "jhoeller,dsyer.com,pwebb,asd".split(","))
                 .forEach(
                         a -> {
                             User user = userRepository.save(new User(a,a,a,
