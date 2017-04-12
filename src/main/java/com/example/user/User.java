@@ -15,11 +15,12 @@ import java.util.Set;
 @Entity
 public class User {
 
-//    @OneToMany(mappedBy = "user")
-//    private Set<Request> requests = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<Request> requests = new HashSet<>();
 
     @Id
-    private String id;
+    @GeneratedValue
+    private long id;
 
     public String password_hash;
 
@@ -27,15 +28,14 @@ public class User {
 
     public String picture;
 
-    public User(String id, String password_hash, String email, String picture) {
-        this.id = id;
+    public User(String password_hash, String email, String picture) {
         this.password_hash = password_hash;
         this.email = email;
         this.picture = picture;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Set<Request> getRequests() {
+        return this.requests;
     }
 
     public void setPassword_hash(String password_hash) {
@@ -50,7 +50,7 @@ public class User {
         this.picture = picture;
     }
 
-    public String getId() {
+    public Long getId() {
         return this.id;
     }
 

@@ -1,14 +1,10 @@
 package com.example.user;
 
-import com.example.UserAlreadyExistException;
-import com.example.UserNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -33,29 +29,22 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    User readUser(@PathVariable("id") String id) {
-        return this.userRepository.findById(id).map(user -> {
+    User readUser(@PathVariable int id) {
+        return this.userRepository.findById((long)id).map(user->{
             return user;
-        })
-                .orElseThrow(() -> new UserNotFoundException(id));
+        }).orElse(null);
     }
-
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> add(@RequestBody User newUser) {
 
         this.userRepository.findById(newUser.getId()).map(user -> {
-            throw new UserAlreadyExistException(user.getId());
-            //return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();
         }).orElse(ResponseEntity.ok().build());
 
-
-        User user = this.userRepository.save(new User(newUser.getId(), newUser.getPassword_hash(), newUser.email, newUser.picture));
+        User user = this.userRepository.save(new User(newUser.getPassword_hash(), newUser.email, newUser.picture));
         if (user != null) {
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(user.getId()).toUri();
-            return ResponseEntity.created(location).build();
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.noContent().build();
         }
@@ -89,9 +78,5 @@ public class UserRestController {
             this.userRepository.delete(user);
             return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.noContent().build());
-    }
-
-    private void validateId(String id) {
-        this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 }
