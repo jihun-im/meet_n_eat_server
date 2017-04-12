@@ -6,13 +6,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
 import java.util.Arrays;
 
+@Configuration
 @EnableResourceServer // API 서버 인증
 @SpringBootApplication
 public class DemoApplication extends ResourceServerConfigurerAdapter {
@@ -35,14 +36,16 @@ public class DemoApplication extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        http.headers().frameOptions().disable();
         http.authorizeRequests()
                 //.anyRequest().authenticated()
                 //.antMatchers(HttpMethod.POST, "/api/v1/users").permitAll();
-                .antMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
-                .anyRequest().authenticated();
-
-        http.headers().frameOptions().disable();
-
+                //.antMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
+                //.anyRequest().authenticated()
+                .antMatchers("api/v1/users", "api/v1/users/**").permitAll()
+                .antMatchers("api/v1/requests", "api/v1/requests/**").authenticated()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/h2-console").permitAll();
         //super.configure(http);
     }
 
