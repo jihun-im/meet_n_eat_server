@@ -1,4 +1,4 @@
-package com.example;
+package com.example.user;
 
 /**
  * Created by jihun.im on 2017-04-06.

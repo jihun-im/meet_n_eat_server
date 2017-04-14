@@ -2,6 +2,7 @@ package com.example.user;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class UserRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     User readUser(@PathVariable int id) {
-        return this.userRepository.findById((long)id).map(user->{
+        return this.userRepository.findById((long) id).map(user -> {
             return user;
         }).orElse(null);
     }
@@ -39,12 +40,14 @@ public class UserRestController {
     ResponseEntity<?> add(@RequestBody User newUser) {
 
         this.userRepository.findById(newUser.getId()).map(user -> {
-            return ResponseEntity.noContent().build();
-        }).orElse(ResponseEntity.ok().build());
+            throw new UserAlreadyExistException("" + newUser.getId());
+        }).orElse(null);
+
+        log.trace("newUser.getId() : " + newUser.getId());
 
         User user = this.userRepository.save(new User(newUser.getPassword_hash(), newUser.email, newUser.picture));
         if (user != null) {
-            return ResponseEntity.ok().build();
+            return new ResponseEntity<>("successfully added\n" + user, HttpStatus.OK);
         } else {
             return ResponseEntity.noContent().build();
         }
@@ -69,7 +72,7 @@ public class UserRestController {
 
             this.userRepository.save(user);
             return ResponseEntity.ok().build();
-        }).orElse(ResponseEntity.noContent().build());
+        }).orElse(new ResponseEntity<>("No such user",HttpStatus.EXPECTATION_FAILED));
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
@@ -77,6 +80,6 @@ public class UserRestController {
         return this.userRepository.findById(newUser.getId()).map(user -> {
             this.userRepository.delete(user);
             return ResponseEntity.ok().build();
-        }).orElse(ResponseEntity.noContent().build());
+        }).orElse(new ResponseEntity<>("No such user",HttpStatus.EXPECTATION_FAILED));
     }
 }

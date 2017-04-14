@@ -38,15 +38,11 @@ public class DemoApplication extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         http.authorizeRequests()
-                //.anyRequest().authenticated()
-                //.antMatchers(HttpMethod.POST, "/api/v1/users").permitAll();
-                //.antMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
-                //.anyRequest().authenticated()
                 .antMatchers("api/v1/users", "api/v1/users/**").permitAll()
-                .antMatchers("api/v1/requests", "api/v1/requests/**").authenticated()
+                //.antMatchers("api/v1/requests", "api/v1/requests/**").authenticated()
                 .antMatchers("/h2-console/**").permitAll()
+                .anyRequest().permitAll()
                 .antMatchers("/h2-console").permitAll();
-        //super.configure(http);
     }
 
     //    @Bean
