@@ -37,7 +37,7 @@ public class UserRestController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add(@RequestBody User newUser) {
+    synchronized ResponseEntity<?> add(@RequestBody User newUser) {
 
         this.userRepository.findById(newUser.getId()).map(user -> {
             throw new UserAlreadyExistException("" + newUser.getId());

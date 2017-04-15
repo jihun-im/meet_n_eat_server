@@ -40,7 +40,7 @@ public class RequestRestController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add(@RequestBody Request newRequest) {
+    synchronized ResponseEntity<?> add(@RequestBody Request newRequest) {
         Request requestAlreadyInRepository = requestRepository.findById(newRequest.getId());
         if (requestAlreadyInRepository != null) {
             throw new RequestAlreadyExistException(newRequest.getId());

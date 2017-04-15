@@ -1,3 +1,5 @@
+/*
+
 -- used in tests that use HSQL
 create table oauth_client_details (
   client_id VARCHAR(256) PRIMARY KEY,
@@ -65,3 +67,5 @@ create table ClientDetails (
   additionalInformation VARCHAR(4096),
   autoApproveScopes VARCHAR(256)
 );
+
+*/
