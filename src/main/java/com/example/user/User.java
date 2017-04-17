@@ -1,5 +1,6 @@
 package com.example.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,10 @@ public class User {
     @Id
     @GeneratedValue
     @Autowired
+    @JsonIgnore
     private long id;
+
+    
 
     @Autowired
     public String password_hash;
