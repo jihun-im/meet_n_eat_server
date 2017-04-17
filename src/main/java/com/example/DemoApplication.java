@@ -28,7 +28,7 @@ public class DemoApplication extends ResourceServerConfigurerAdapter {
                 "jhoeller@naver.com,dsyer@naver.com,pwebb@naver.com,asd@naver.com".split(","))
                 .forEach(
                         a -> {
-                            User user = userRepository.save(new User(a, a,
+                            User user = userRepository.save(new User(a, a, a,
                                     "picture_url_hahaha"));
                         });
     }

@@ -39,13 +39,20 @@ public class UserRestController {
     @RequestMapping(method = RequestMethod.POST)
     synchronized ResponseEntity<?> add(@RequestBody User newUser) {
 
-        this.userRepository.findById(newUser.getId()).map(user -> {
+        userRepository.findById(newUser.getId()).map(user -> {
             throw new UserAlreadyExistException("" + newUser.getId());
         }).orElse(null);
 
+        User userInDb = userRepository.findByUserid(newUser.getUserid());
+        if (userInDb != null) {
+            // already exist!
+            throw new UserAlreadyExistException("" + newUser.getUserid());
+        }
+
+
         log.trace("newUser.getId() : " + newUser.getId());
 
-        User user = this.userRepository.save(new User(newUser.getPassword_hash(), newUser.email, newUser.picture));
+        User user = this.userRepository.save(new User(newUser.getUserid(), newUser.getPassword_hash(), newUser.email, newUser.picture));
         if (user != null) {
             return new ResponseEntity<>("successfully added\n" + user, HttpStatus.OK);
         } else {
@@ -56,7 +63,7 @@ public class UserRestController {
     @RequestMapping(method = RequestMethod.PUT)
     ResponseEntity<?> update(@RequestBody User newUser) {
         return this.userRepository.findById(newUser.getId()).map(user -> {
-
+//TODO id로 PUT하는것을 user_id로 PUT하도록 바꿔야함
             String email = newUser.getEmail();
             if (email != null) {
                 user.setEmail(email);
@@ -72,7 +79,7 @@ public class UserRestController {
 
             this.userRepository.save(user);
             return ResponseEntity.ok().build();
-        }).orElse(new ResponseEntity<>("No such user",HttpStatus.EXPECTATION_FAILED));
+        }).orElse(new ResponseEntity<>("No such user", HttpStatus.EXPECTATION_FAILED));
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
@@ -80,6 +87,6 @@ public class UserRestController {
         return this.userRepository.findById(newUser.getId()).map(user -> {
             this.userRepository.delete(user);
             return ResponseEntity.ok().build();
-        }).orElse(new ResponseEntity<>("No such user",HttpStatus.EXPECTATION_FAILED));
+        }).orElse(new ResponseEntity<>("No such user", HttpStatus.EXPECTATION_FAILED));
     }
 }

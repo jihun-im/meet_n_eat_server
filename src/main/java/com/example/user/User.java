@@ -23,7 +23,8 @@ public class User {
     @JsonIgnore
     private long id;
 
-    
+    @Autowired
+    public String userid;
 
     @Autowired
     public String password_hash;
@@ -34,7 +35,8 @@ public class User {
     @Autowired
     public String picture;
 
-    public User(String password_hash, String email, String picture) {
+    public User(String userid, String password_hash, String email, String picture) {
+        this.userid = userid;
         this.password_hash = password_hash;
         this.email = email;
         this.picture = picture;
